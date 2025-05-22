@@ -1,5 +1,6 @@
 from textnode import *
 from htmlnode import *
+import re
 
 def convert_text_node_to_html_node(text_node):
     if text_node.text_type == TextType.TEXT:
@@ -38,3 +39,23 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         new_nodes.extend(splits)
     return new_nodes
 
+def extract_markdown_images(text):
+    ''' Split the text into sections based on the "!" character
+    images = []
+    sections = text.split("!")
+    for section in sections[1:]:
+        if section.startswith("[") and "]" in section:
+            start = section.index("[") + 1
+            end = section.index("]")
+            image_text = section[start:end]
+            image_url = section[end + 2: -1].split(" ")[0]
+            images.append((image_text, image_url))
+    '''
+    images = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+    #print(images)
+    return images
+
+def extract_markdown_links(text):
+    links = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+    #print(links)
+    return links
