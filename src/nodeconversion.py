@@ -114,3 +114,17 @@ def extract_markdown_links(text):
     links = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
     #print(links)
     return links
+
+def extract_title(text):
+    """
+    Extracts the title from the text.
+    The title is the first line of the text, which is expected to be a markdown header.
+    """
+    lines = text.splitlines()
+    if not lines:
+        raise Exception("No lines found in the text.")
+    for line in lines:
+        line = line.strip()
+        if line.startswith("# "):
+            return line[2:].strip()
+    raise Exception("No title found in the text. Make sure the title is the first line and starts with '# '.")
