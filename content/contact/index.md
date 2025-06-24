@@ -1,9 +1,7 @@
-# Contact the Author
+# Contact Me
 
 [< Back Home](/)
 
-Give me a call anytime to chat about Tolkien!
+Email
+Instagram ![Instagram button](/images/instagram.png)
 
-`555-555-5555`
-
-**"Váya márië."**
