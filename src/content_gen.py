@@ -2,7 +2,7 @@ import os
 from blocks import markdown_to_html_node
 from pathlib import Path
 
-def generate_page(src_path, template_path, dst_path):
+def generate_page(src_path, template_path, dst_path, basepath):
     """
     Generates a page by reading the source markdown file, converting it to HTML,
     and writing it to the destination path using the specified template.
@@ -25,13 +25,15 @@ def generate_page(src_path, template_path, dst_path):
     title = extract_title(markdown_content)
     template_content = template_content.replace("{{ Title }}", title)
     template_content = template_content.replace("{{ Content }}", html)
+    template_content = template_content.replace('href="/', 'href="' + basepath)
+    template_content = template_content.replace('src="/', 'src="' + basepath)
 
     if dst_path != "":
         os.makedirs(os.path.dirname(dst_path), exist_ok=True)
     with open(dst_path, 'w', encoding='utf-8') as dst_file:
         dst_file.write(template_content)
 
-def generate_pages_recursively(src_dir, template_path, dst_dir):
+def generate_pages_recursively(src_dir, template_path, dst_dir, basepath):
     """
     Recursively generates pages from markdown files in the source directory,
     using the specified template, and writes them to the destination directory.
@@ -45,11 +47,11 @@ def generate_pages_recursively(src_dir, template_path, dst_dir):
         if os.path.isdir(src_file_path):
             # Recursively process subdirectories
             sub_dst_dir = os.path.join(dst_dir, filename)
-            generate_pages_recursively(src_file_path, template_path, sub_dst_dir)
+            generate_pages_recursively(src_file_path, template_path, sub_dst_dir, basepath)
         elif filename.endswith('.md'):
             # Process markdown files
             dst_file_path = os.path.join(dst_dir, filename.replace('.md', '.html'))
-            generate_page(src_file_path, template_path, dst_file_path)
+            generate_page(src_file_path, template_path, dst_file_path, basepath)
         else:
             print(f"Skipping non-markdown file: {src_file_path}")
 
