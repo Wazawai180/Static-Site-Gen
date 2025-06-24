@@ -5,16 +5,16 @@ import re
 def convert_text_node_to_html_node(text_node):
     if text_node.text_type == TextType.TEXT:
         return LeafNode(tag=None, value=text_node.text)
-    elif text_node.text_type == TextType.BOLD:
-        return LeafNode(tag="strong", value=text_node.text)
-    elif text_node.text_type == TextType.ITALIC:
-        return LeafNode(tag="em", value=text_node.text)
-    elif text_node.text_type == TextType.CODE:
+    if text_node.text_type == TextType.BOLD:
+        return LeafNode(tag="b", value=text_node.text)
+    if text_node.text_type == TextType.ITALIC:
+        return LeafNode(tag="i", value=text_node.text)
+    if text_node.text_type == TextType.CODE:
         return LeafNode(tag="code", value=text_node.text)
-    elif text_node.text_type == TextType.LINK:
+    if text_node.text_type == TextType.LINK:
         return LeafNode(tag="a", value=text_node.text, props={"href": text_node.url})
-    elif text_node.text_type == TextType.IMAGE:
-        return LeafNode(tag="img", value=None, props={"src": text_node.url, "alt": text_node.text})
+    if text_node.text_type == TextType.IMAGE:
+        return LeafNode(tag="img", value="", props={"src": text_node.url, "alt": text_node.text})
     else:
         raise ValueError(f"Unknown TextType: {text_node.text_type}")
 
@@ -115,16 +115,3 @@ def extract_markdown_links(text):
     #print(links)
     return links
 
-def extract_title(text):
-    """
-    Extracts the title from the text.
-    The title is the first line of the text, which is expected to be a markdown header.
-    """
-    lines = text.splitlines()
-    if not lines:
-        raise Exception("No lines found in the text.")
-    for line in lines:
-        line = line.strip()
-        if line.startswith("# "):
-            return line[2:].strip()
-    raise Exception("No title found in the text. Make sure the title is the first line and starts with '# '.")

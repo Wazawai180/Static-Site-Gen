@@ -36,7 +36,7 @@ def block_to_block_type(block):
         return BlockType.QUOTE
     if block.startswith("- "):
         for line in lines:
-            if not (line.startswith("- ")):
+            if not line.startswith("- "):
                 return BlockType.PARAGRAPH
         return BlockType.ULIST
     if block.startswith("1. "):
@@ -88,16 +88,17 @@ def paragraph_to_html_node(block):
     return ParentNode("p", children)
 
 def heading_to_html_node(block):
-    lines = block.split("\n")
     level = 0
-    while level < len(lines[0]) and lines[0][level] == "#":
-        level += 1
-    if level == 0 or level > 6:
-        raise ValueError("Invalid heading level")
-    tag = f"h{level}"
-    paragraph = " ".join(lines)
-    children = text_to_children(paragraph[level:])
-    return ParentNode(tag, children)
+    for char in block:
+        if char == "#":
+            level += 1
+        else:
+            break
+    if level + 1 >= len(block):
+        raise ValueError(f"invalid heading level: {level}")
+    text = block[level + 1 :]
+    children = text_to_children(text)
+    return ParentNode(f"h{level}", children)
 
 def code_to_html_node(block):
     if not block.startswith("```") or not block.endswith("```"):
